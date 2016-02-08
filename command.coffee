@@ -1,7 +1,7 @@
 #!/usr/bin/env coffee
 
 commander        = require 'commander'
-packageJSON      = require '../package.json'
+packageJSON      = require './package.json'
 
 class Command
   constructor: ->

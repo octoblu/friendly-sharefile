@@ -19,18 +19,18 @@ class UploadCommand
     fs.readFileSync path.resolve(@filename)
 
   uploadFileById: =>
-    sharefileService = new ShareFileService {@token, @sharefileDomain}
+    sharefileService = new ShareFileService {@token, @domain}
     fileName = path.basename @filename
     fileData = @getFileData()
-    sharefileService.uploadFileById {fileName,fileSize:fileData.length, @title, @description, @itemId}, fileData, (error, result) =>
+    sharefileService.uploadFileById {fileName,@title, @description,@itemId,data:fileData}, (error, result) =>
       return console.log colors.red "Error: #{error.message}" if error?
       console.log JSON.stringify result.body, null, 2
 
   uploadFileByPath: =>
-    sharefileService = new ShareFileService {@token, @sharefileDomain}
+    sharefileService = new ShareFileService {@token, @domain}
     fileName = path.basename @filename
     fileData = @getFileData()
-    sharefileService.uploadFileByPath {fileName,fileSize:fileData.length, @title, @description, @path}, fileData, (error, result) =>
+    sharefileService.uploadFileByPath {fileName,@title,@description,@path,data:fileData}, (error, result) =>
       return console.log colors.red "Error: #{error.message}" if error?
       console.log JSON.stringify result.body, null, 2
 
@@ -46,16 +46,14 @@ class UploadCommand
       .parse process.argv
 
     @filename = _.first commander.args
-    @sharefileDomain = commander.Domain
+    @domain = commander.Domain
     @token = commander.token
     @path = commander.path
     @itemId = commander.id
-    @batchId = commander.batchId
-    @batchLast = commander.batchLast?
     @title = commander.title
     @desciption = commander.desciption
 
-    unless @sharefileDomain? and @token?
+    unless @domain? and @token?
       commander.outputHelp()
       process.exit 0
 

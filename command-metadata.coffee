@@ -14,13 +14,13 @@ class MetadataCommand
     @getMetadataById() if @itemId?
 
   getMetadataById: =>
-    sharefileService = new ShareFileService {@token, @sharefileDomain}
+    sharefileService = new ShareFileService {@token, @domain}
     sharefileService.getMetadataById {@itemId}, (error, result) =>
       return console.log colors.red "Error: #{error.message}" if error?
       console.log JSON.stringify result.body, null, 2
 
   getMetadataByPath: =>
-    sharefileService = new ShareFileService {@token, @sharefileDomain}
+    sharefileService = new ShareFileService {@token, @domain}
     sharefileService.getMetadataByPath {@path}, (error, result) =>
       return console.log colors.red "Error: #{error.message}" if error?
       console.log JSON.stringify result.body, null, 2
@@ -33,12 +33,12 @@ class MetadataCommand
       .option '-p, --path <path>', 'The file path (must have either itemId or path)'
       .parse process.argv
 
-    @sharefileDomain = commander.Domain
+    @domain = commander.Domain
     @token = commander.token
     @itemId = commander.id
     @path = commander.path
 
-    unless @sharefileDomain? and @token?
+    unless @domain? and @token?
       commander.outputHelp()
       process.exit 0
 

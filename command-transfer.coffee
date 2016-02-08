@@ -14,16 +14,16 @@ class TransferCommand
     @transferLinkFileById() if @itemId?
 
   transferLinkFileById: =>
-    meshbluConfig = new MeshbluConfig filename: @filename
-    sharefileService = new ShareFileService {@token, @sharefileDomain,meshbluConfig}
-    @_getSharefileService().transferLinkFileById {statusDevice:meshbluConfig,@link,@fileName,@itemId}, (error, result) =>
+    meshbluConfig = new MeshbluConfig({@filename}).toJSON()
+    sharefileService = new ShareFileService {@token,@domain,meshbluConfig}
+    sharefileService.transferLinkFileById {statusDeviceConfig:meshbluConfig,@link,@fileName,@itemId}, (error, result) =>
       return console.log colors.red "Error: #{error.message}" if error?
       console.log JSON.stringify result.body, null, 2
 
   transferLinkFileByPath: =>
-    meshbluConfig = new MeshbluConfig filename: @filename
-    sharefileService = new ShareFileService {@token, @sharefileDomain,meshbluConfig}
-    @_getSharefileService().transferLinkFileByPath {statusDevice:meshbluConfig,@link,@fileName,@path}, (error, result) =>
+    meshbluConfig = new MeshbluConfig({@filename}).toJSON()
+    sharefileService = new ShareFileService {@token,@domain,meshbluConfig}
+    sharefileService.transferLinkFileByPath {statusDeviceConfig:meshbluConfig,@link,@fileName,@path}, (error, result) =>
       return console.log colors.red "Error: #{error.message}" if error?
       console.log JSON.stringify result.body, null, 2
 
@@ -35,18 +35,18 @@ class TransferCommand
       .option '-p, --path <path>', 'The target folder path (must have either itemId or path)'
       .option '-l, --link <link>', 'Shared link to transfer to Sharefile'
       .option '-f, --fileName <fileName.txt>', 'File name with extension (optional)'
-      .usage '[options] path/to/meshblu.json'
+      .usage '[options] path/to/status-device-meshblu.json'
       .parse process.argv
 
     @filename = _.first commander.args
-    @sharefileDomain = commander.Domain
+    @domain = commander.Domain
     @token = commander.token
     @path = commander.path
     @itemId = commander.id
     @link = commander.link
     @fileName = commander.fileName
 
-    unless @sharefileDomain? and @token? and @link?
+    unless @domain? and @token? and @link?
       commander.outputHelp()
       process.exit 0
 

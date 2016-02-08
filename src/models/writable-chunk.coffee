@@ -1,7 +1,8 @@
 {Writable} = require 'stream'
 request    = require 'request'
 async      = require 'async'
-debug      = require('debug')('friendly-sharefile-service:writablechunk')
+_          = require 'lodash'
+debug      = require('debug')('friendly-sharefile:writablechunk')
 ChunkUriParser = require './chunk-uri-parser'
 
 class WritableChunk extends Writable
@@ -9,6 +10,14 @@ class WritableChunk extends Writable
     super {objectMode: true}
     @byteOffset = 0
     @index = 0
+    @progressChunks = _.times 10, (n) => (n + 1) * 10
+
+  _emitProgess: =>
+    rawProgress = @byteOffset / @fileSize
+    progress = 10 * _.round 10 * rawProgress
+    return unless progress in @progressChunks
+    _.pull @progressChunks, progress
+    @emit 'progress', progress
 
   _requestChunkUri: (callback) =>
     return callback null if @ChunkUri?
@@ -20,7 +29,8 @@ class WritableChunk extends Writable
   _write: (chunk, encoding, callback) =>
     @_requestChunkUri (error) =>
       return callback error if error?
-      isLast = (@byteOffset + chunk.length) == @fileSize
+      nextByteOffset = @byteOffset + chunk.length
+      isLast = (nextByteOffset) == @fileSize
 
       debug 'if final chunk', isLast, {@byteOffset, @fileSize}
       uri = ChunkUriParser.parse {uri:@ChunkUri,chunk,@byteOffset,@index,isLast}
@@ -30,7 +40,10 @@ class WritableChunk extends Writable
 
       retryOptions = {times: 3,interval:100}
       makeRequest = async.apply @_makeRequest, uri, body: chunk
-      async.retry retryOptions, makeRequest, callback
+      async.retry retryOptions, makeRequest, (error) =>
+        return callback error if error?
+        @_emitProgess()
+        callback()
 
   _makeRequest: (uri, options, callback) =>
     debug 'post to chunk', uri

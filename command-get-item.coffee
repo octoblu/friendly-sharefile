@@ -14,13 +14,13 @@ class GetItemIdCommand
     @getItemById() if @itemId?
 
   getItemById: =>
-    sharefileService = new ShareFileService {@token, @sharefileDomain}
+    sharefileService = new ShareFileService {@token, @domain}
     sharefileService.getItemById {@itemId}, (error, result) =>
       return console.log colors.red "Error: #{error.message}" if error?
       console.log JSON.stringify result.body, null, 2
 
   getItemByPath: =>
-    sharefileService = new ShareFileService {@token, @sharefileDomain}
+    sharefileService = new ShareFileService {@token, @domain}
     sharefileService.getItemByPath {@path}, (error, result) =>
       return console.log colors.red "Error: #{error.message}" if error?
       console.log JSON.stringify result.body, null, 2
@@ -33,13 +33,13 @@ class GetItemIdCommand
       .option '-p, --path <path>', 'The file path (must have either itemId or path)'
       .parse process.argv
 
-    @sharefileDomain = commander.Domain
+    @domain = commander.Domain
     @token = commander.token
     @path = commander.path
     @itemId = commander.id
     @path = commander.path
 
-    unless @sharefileDomain? and @token?
+    unless @domain? and @token?
       commander.outputHelp()
       process.exit 0
 

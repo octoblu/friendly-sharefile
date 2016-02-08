@@ -209,21 +209,28 @@ class Sharefile
       return callback error if error?
       @downloadFileById {itemId: result.body.id}, callback
 
-  transferLinkFileById: ({statusDevice,itemId,link,fileName}, callback) =>
+  transferLinkFileById: ({statusDeviceConfig,itemId,link,fileName}, callback) =>
     linkDownload = new LinkDownload()
+    autoFileName = linkDownload.getLinkInfo(link).fileName
+    fileName ?= autoFileName
+
+    statusDevice = new StatusDevice meshbluConfig: statusDeviceConfig
+
     stream = linkDownload.stream({link})
       .on 'response', (response) =>
         fileSize = parseInt response.headers['content-length']
         chunker = new WritableChunk {@requestChunkUri,fileSize,fileName,itemId}
-        stream.pipe(chunker).on 'finish', =>
-          @_finishChunking chunker.FinishUri, (error) =>
-            return callback @_createError 500, error.message if error?
-            callback null, {success:true}
+        stream.pipe(chunker)
+          .on 'progress', statusDevice.updateProgress
+          .on 'finish', =>
+            @_finishChunking chunker.FinishUri, (error) =>
+              return callback @_createError 500, error.message if error?
+              callback null, @_createResponse 201, {success:true}
 
-  transferLinkFileByPath: ({path,link,fileName}, callback) =>
+  transferLinkFileByPath: ({statusDeviceConfig,path,link,fileName}, callback) =>
     @getItemByPath {path}, (error, result) =>
       return callback error if error?
-      @transferLinkFileById {itemId: result.body.id,link,fileName}, callback
+      @transferLinkFileById {itemId: result.body.id,statusDeviceConfig,link,fileName}, callback
 
   _finishChunking: (uri, callback=->) =>
     debug 'finish chunking uri', uri

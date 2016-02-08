@@ -16,13 +16,13 @@ class DownloadCommand
     @downloadFileById() if @itemId?
 
   downloadFileById: =>
-    sharefileService = new ShareFileService {@token, @sharefileDomain}
+    sharefileService = new ShareFileService {@token, @domain}
     sharefileService.downloadFileById {@itemId}, (error, result) =>
       return console.error colors.red "Error: #{error.message}" if error?
       console.log result.body
 
   downloadFileByPath: =>
-    sharefileService = new ShareFileService {@token, @sharefileDomain}
+    sharefileService = new ShareFileService {@token, @domain}
     sharefileService.downloadFileByPath {@path}, (error, result) =>
       return console.error colors.red "Error: #{error.message}" if error?
       console.log result.body
@@ -35,12 +35,12 @@ class DownloadCommand
       .option '-p, --path <path>', 'The target folder path (must have either itemId or path)'
       .parse process.argv
 
-    @sharefileDomain = commander.Domain
+    @domain = commander.Domain
     @token = commander.token
     @path = commander.path
     @itemId = commander.id
 
-    unless @sharefileDomain? and @token?
+    unless @domain? and @token?
       commander.outputHelp()
       process.exit 1
 
