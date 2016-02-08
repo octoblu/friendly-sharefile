@@ -1,0 +1,56 @@
+{
+  "name": "friendly-sharefile",
+  "version": "1.0.0",
+  "description": "Friendly sharefile client library",
+  "main": "index.js",
+  "scripts": {
+    "test": "istanbul cover _mocha -- -R spec --require coffee-coverage/register-istanbul"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/octoblu/friendly-sharefile.git"
+  },
+  "keywords": [
+    "Friendly",
+    "Sharefile",
+    "Client",
+    "Citrix",
+    "Octoblu"
+  ],
+  "author": "Octoblu Inc, <npm@octoblu.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/octoblu/friendly-sharefile/issues"
+  },
+  "homepage": "https://github.com/octoblu/friendly-sharefile#readme",
+  "bin": {
+    "sharefile-util": "./command.js",
+    "sharefile-util-download": "./command-download.js",
+    "sharefile-util-get-item": "./command-get-item.js",
+    "sharefile-util-metadata": "./command-metadata.js",
+    "sharefile-util-share": "./command-share.js",
+    "sharefile-util-transfer": "./command-transfer.js",
+    "sharefile-util-upload": "./command-upload.js"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "coffee-coverage": "^1.0.1",
+    "istanbul": "^0.4.2",
+    "mocha": "^2.4.5",
+    "mocha-istanbul": "^0.2.0",
+    "sinon": "^1.17.3",
+    "sinon-chai": "^2.8.0"
+  },
+  "dependencies": {
+    "async": "^1.5.2",
+    "coffee-script": "^1.10.0",
+    "colors": "^1.1.2",
+    "commander": "^2.9.0",
+    "debug": "^2.2.0",
+    "lodash": "^4.3.0",
+    "meshblu-config": "^3.1.1",
+    "meshblu-http": "^5.0.2",
+    "request": "^2.69.0",
+    "uuid": "^2.0.1"
+  }
+}
