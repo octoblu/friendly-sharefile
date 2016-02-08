@@ -5,7 +5,7 @@ class StatusDevice
   constructor: ({@meshbluConfig}) ->
     @meshbluHttp = new MeshbluHttp @meshbluConfig
 
-  create: ({link}, callback) =>
+  create: ({link,uuid}, callback) =>
     debug 'creating status device'
     deviceProperties =
       name: 'Sharefile Device Status'
@@ -14,11 +14,11 @@ class StatusDevice
         link: link
         progress: 0
         done: false
-      configureWhitelist: [@meshbluConfig.uuid]
-      receiveWhitelist: ['*']
-      sendWhitelist: ['*']
-      discoverWhitelist: [@meshbluConfig.uuid]
-      owner: @meshbluConfig.uuid
+      configureWhitelist: [uuid,@meshbluConfig.uuid]
+      receiveWhitelist: [uuid]
+      sendWhitelist: [uuid]
+      discoverWhitelist: [uuid,@meshbluConfig.uuid]
+      owner: uuid
 
     @meshbluHttp.register deviceProperties, callback
 
