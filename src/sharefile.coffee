@@ -166,27 +166,27 @@ class Sharefile
       return callback @_createError response.statusCode, body?.message?.value if response.statusCode > 299
       callback null, ChunkUri: body.ChunkUri, FinishUri: body.FinishUri
 
-  uploadFileById: ({fileName, title, description, itemId}, fileData, callback) =>
-    fileData = JSON.stringify fileData, null, 2 if _.isPlainObject fileData
+  uploadFileById: ({fileName, title, description, itemId, data}, callback) =>
+    data = JSON.stringify data, null, 2 if _.isPlainObject data
     method = 'standard'
-    @requestChunkUri {method, itemId, fileName, title, description, fileSize: fileData.length}, (error, result) =>
+    @requestChunkUri {method, itemId, fileName, title, description, fileSize: data.length}, (error, result) =>
       return callback error if error?
       chunkUri = ChunkUriParser.parse
         uri:  result.ChunkUri
-        chunk: fileData
+        chunk: data
         byteOffset: 0
         index: 0
         isLast: true
       debug 'chunk uri', chunkUri
-      request.post chunkUri, body: fileData, (error, response, body) =>
+      request.post chunkUri, body: data, (error, response, body) =>
         return callback @_createError 500, error.message if error?
         return callback @_createError response.statusCode, body if response.statusCode > 299
         callback null, @_createResponse {statusCode: 201}, success: true
 
-  uploadFileByPath: ({fileName, title, description, path}, fileData, callback) =>
+  uploadFileByPath: ({fileName, title, description, path, data}, callback) =>
     @getItemByPath {path}, (error, result) =>
       return callback error if error?
-      @uploadFileById {fileName, title, description,itemId: result.body.id}, fileData, callback
+      @uploadFileById {fileName, title, description,itemId: result.body.id,data}, callback
 
   downloadFileById: ({itemId}, callback) =>
     options = @_getRequestOptions()
