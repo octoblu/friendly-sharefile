@@ -8,7 +8,7 @@ debug          = require('debug')('friendly-sharefile:library')
 request        = require 'request'
 
 class Sharefile
-  constructor: ({@sharefileDomain,@token}) ->
+  constructor: ({@domain,@token}) ->
 
   getMetadataById: ({itemId}, callback) =>
     options = @_getRequestOptions()
@@ -242,11 +242,21 @@ class Sharefile
 
   _getRequestOptions: =>
     return {
-      baseUrl: "https://#{@sharefileDomain}.sf-api.com/sf/v3/"
+      baseUrl: "https://#{@domain}.sf-api.com/sf/v3/"
       json: true
       auth:
         bearer: @token
     }
 
+  _createResponse: (codeOrResponse, body) =>
+    code = 200
+    code = codeOrResponse if _.isNumber codeOrResponse
+    code = codeOrResponse.statusCode if _.isPlainObject codeOrResponse
+    return code: code, body: body
+
+  _createError: (code, message) =>
+    error = new Error message
+    error.code = code if code?
+    return error
 
 module.exports = Sharefile
