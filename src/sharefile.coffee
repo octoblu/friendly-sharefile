@@ -225,7 +225,8 @@ class Sharefile
           .on 'finish', =>
             @_finishChunking chunker.FinishUri, (error) =>
               return callback @_createError 500, error.message if error?
-              callback null, @_createResponse 201, {success:true}
+              statusDevice.updateDone =>
+                callback null, @_createResponse 201, {success:true}
 
   transferLinkFileByPath: ({statusDeviceConfig,path,link,fileName}, callback) =>
     @getItemByPath {path}, (error, result) =>

@@ -28,4 +28,8 @@ class StatusDevice
       return console.error error if error?
       debug 'updated progress'
 
+  updateDone: (callback=->) =>
+    debug 'updating done'
+    @meshbluHttp.updateDangerously @meshbluConfig.uuid, {$set: 'sharefile.done': true}, callback
+
 module.exports = StatusDevice
