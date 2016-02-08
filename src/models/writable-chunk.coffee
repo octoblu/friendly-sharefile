@@ -10,13 +10,13 @@ class WritableChunk extends Writable
     super {objectMode: true}
     @byteOffset = 0
     @index = 0
-    @progressChunks = _.times 10, (n) => (n + 1) * 10
+    @lastProgress = 0
 
   _emitProgess: =>
     rawProgress = @byteOffset / @fileSize
-    progress = 10 * _.round 10 * rawProgress
-    return unless progress in @progressChunks
-    _.pull @progressChunks, progress
+    progress = _.round 100 * rawProgress
+    return if progress < (@lastProgress + 2) # if it hasn't been sent in 2 percent
+    @lastProgress = progress
     @emit 'progress', progress
 
   _requestChunkUri: (callback) =>
