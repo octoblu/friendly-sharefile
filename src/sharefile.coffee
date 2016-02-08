@@ -117,9 +117,9 @@ class Sharefile
   getHomeFolder: ({}, callback) =>
     options = @_getRequestOptions()
     options.uri = "/Items"
-    debug 'getChildren options', options
+    debug 'getHomeFolder options', options
     request.get options, (error, response, body) =>
-      debug 'getChildren result', error, response?.statusCode
+      debug 'getHomeFolder result', error, response?.statusCode
       return callback @_createError 500, error.message if error?
       return callback @_createError response.statusCode, body?.message?.value if response.statusCode > 299
       callback null, @_createResponse response, Items.ConvertRaw(body)
@@ -129,7 +129,7 @@ class Sharefile
     return callback @_createError 422, "Invalid Path" unless path.indexOf('/') >= 0
     # Home folder is first, so skip it
     segments = _.tail Items.GetPathSegments path
-    @getHomeFolder (error, result) =>
+    @getHomeFolder {}, (error, result) =>
       return callback error if error?
       @getItemForPathSegment {item:result.body, segments, path}, callback
 

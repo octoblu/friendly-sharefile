@@ -1,6 +1,6 @@
 {
   "name": "friendly-sharefile",
-  "version": "3.2.1",
+  "version": "3.2.2",
   "description": "Friendly sharefile client library",
   "main": "index.js",
   "scripts": {
