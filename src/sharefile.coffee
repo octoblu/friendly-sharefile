@@ -114,7 +114,7 @@ class Sharefile
       items.addRawSet body.value
       callback null, @_createResponse response, items.convert()
 
-  getHomeFolder: (callback) =>
+  getHomeFolder: ({}, callback) =>
     options = @_getRequestOptions()
     options.uri = "/Items"
     debug 'getChildren options', options
