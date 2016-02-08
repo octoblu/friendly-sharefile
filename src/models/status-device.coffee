@@ -29,7 +29,7 @@ class StatusDevice
       debug 'updated progress'
 
   updateDone: (callback=->) =>
-    debug 'updating done'
-    @meshbluHttp.updateDangerously @meshbluConfig.uuid, {$set: 'sharefile.done': true}, callback
+    debug 'updating done, removing device'
+    @meshbluHttp.unregister {uuid: @meshbluConfig.uuid}, callback
 
 module.exports = StatusDevice
