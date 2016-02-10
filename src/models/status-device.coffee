@@ -5,26 +5,30 @@ class StatusDevice
   constructor: ({@meshbluConfig}) ->
     @meshbluHttp = new MeshbluHttp @meshbluConfig
 
-  create: ({link,uuid}, callback) =>
+  create: ({link,uuid,fileName}, callback) =>
     debug 'creating status device'
+    whitelist = []
+    whitelist = [uuid] if uuid?
+
     deviceProperties =
-      name: 'Sharefile Device Status'
-      type: 'sharefile:status'
-      sharefile:
-        link: link
+      name: 'Sharefile Transfer'
+      type: 'progress:status'
+      progressInfo:
+        title: fileName ? link
         progress: 0
         done: false
-      configureWhitelist: [uuid,@meshbluConfig.uuid]
-      receiveWhitelist: [uuid]
-      sendWhitelist: [uuid]
-      discoverWhitelist: [uuid,@meshbluConfig.uuid]
-      owner: uuid
+      configureWhitelist: whitelist
+      receiveWhitelist: whitelist
+      sendWhitelist: whitelist
+      discoverWhitelist: whitelist
+
+    deviceProperties.owner = uuid if uuid?
 
     @meshbluHttp.register deviceProperties, callback
 
   updateProgress: (progress) =>
     debug 'updating progress', progress
-    @meshbluHttp.updateDangerously @meshbluConfig.uuid, {$set: 'sharefile.progress': progress}, (error) =>
+    @meshbluHttp.updateDangerously @meshbluConfig.uuid, {$set: 'progressInfo.progress': progress}, (error) =>
       return console.error error if error?
       debug 'updated progress'
 
