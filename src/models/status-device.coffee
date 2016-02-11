@@ -9,12 +9,12 @@ class StatusDevice
     debug 'creating status device'
     whitelist = []
     whitelist = [uuid] if uuid?
-
+    title = fileName || link
     deviceProperties =
       name: 'Sharefile Transfer'
       type: 'progress:status'
       progressInfo:
-        title: fileName ? link
+        title: title
         progress: 0
         done: false
       configureWhitelist: whitelist
