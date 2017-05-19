@@ -1,3 +1,4 @@
+{describe,it,expect} = global
 FriendlySharefile = require '../'
 
 describe 'Test', ->

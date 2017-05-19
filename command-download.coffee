@@ -1,4 +1,3 @@
-_                = require 'lodash'
 commander        = require 'commander'
 colors           = require 'colors'
 fs               = require 'fs'
