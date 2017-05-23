@@ -166,7 +166,9 @@ class Sharefile
       return callback @_createError response.statusCode, body?.message?.value if response.statusCode > 299
       callback null, ChunkUri: body.ChunkUri, FinishUri: body.FinishUri
 
-  uploadFileById: ({fileName, title, description, itemId, data}, callback) =>
+  uploadFileById: (options, callback) =>
+    {fileName, title, description, itemId, data} = options
+    debug 'uploadFileById', JSON.stringify(options,null,2)
     data = JSON.stringify data, null, 2 if _.isPlainObject data
     method = 'standard'
     @requestChunkUri {method, itemId, fileName, title, description, fileSize: data.length}, (error, result) =>
